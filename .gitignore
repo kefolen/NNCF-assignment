@@ -1,0 +1,15 @@
+.venv*/
+models/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+build/
+dist/
+tmp/
+.idea/
+*.png
+*.svg
+!/examples/**/*.svg
+/benchmarks/output/
+/benchmarks/results/

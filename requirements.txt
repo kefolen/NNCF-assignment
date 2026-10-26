@@ -1,0 +1,4 @@
+openvino==2026.4.1
+graphviz==0.21
+pytest==9.1.1
+netron==9.3.2
