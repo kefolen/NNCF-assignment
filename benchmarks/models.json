@@ -1,0 +1,154 @@
+{
+  "recorded_utc": "2026-10-23T10:34:00.548610+00:00",
+  "count_scope": "Top-level serialized IR XML layers and tensor edges, before visualization transformations.",
+  "models": {
+    "branching": {
+      "origin": "Locally generated with OpenVINO operations; no pretrained weights.",
+      "revision": "scripts/prepare_models.py",
+      "license": "Repository example code; no third-party checkpoint.",
+      "export": "OpenVINO save_model(compress_to_fp16=False)",
+      "prepare_command": "python scripts/prepare_models.py branching",
+      "files": [
+        {
+          "path": "models/branching/openvino_model.xml",
+          "bytes": 4721,
+          "sha256": "6982eae6c8100b1b1f8aed62667e9b8db22b0c08bc6510fadc124bf5e7731f67"
+        },
+        {
+          "path": "models/branching/openvino_model.bin",
+          "bytes": 16,
+          "sha256": "d49b6d3e16c32c40538f38dca963f060b339064899ba5762821c42e1916ccea7"
+        }
+      ],
+      "xml_graph": {
+        "nodes": 11,
+        "edges": 13,
+        "operation_types": {
+          "Add": 3,
+          "Concat": 1,
+          "Const": 2,
+          "Parameter": 1,
+          "ReLU": 2,
+          "Result": 1,
+          "Split": 1
+        },
+        "runtime_version": "2026.4.1-22982-e213a147257-releases/2026/4",
+        "export_packages": {}
+      }
+    },
+    "mobilenet": {
+      "origin": "https://github.com/onnx/models/blob/c5cae0f1942c8d7727372c7b1f6b485aa39e4421/validated/vision/classification/mobilenet/model/mobilenetv2-12.onnx",
+      "revision": "c5cae0f1942c8d7727372c7b1f6b485aa39e4421",
+      "license": "Apache-2.0 (MobileNet model README)",
+      "license_source": "https://github.com/onnx/models/blob/c5cae0f1942c8d7727372c7b1f6b485aa39e4421/validated/vision/classification/mobilenet/README.md#license",
+      "source_sha256": "c0c3f76d93fa3fd6580652a45618618a220fced18babf65774ed169de0432ad5",
+      "export": "OpenVINO convert_model(ONNX); save_model(compress_to_fp16=False)",
+      "prepare_command": "python scripts/prepare_models.py mobilenet",
+      "files": [
+        {
+          "path": "models/mobilenetv2/openvino_model.xml",
+          "bytes": 139256,
+          "sha256": "fc65fcd754e387d544f5a05c49671c0c5dae1b333e0d89984def4b17e43f53ad"
+        },
+        {
+          "path": "models/mobilenetv2/openvino_model.bin",
+          "bytes": 13951296,
+          "sha256": "fb3a87f05bed6acea47570bc6c357b436cee6cd7feacff13a1bc1b0e3968c064"
+        }
+      ],
+      "xml_graph": {
+        "nodes": 263,
+        "edges": 272,
+        "operation_types": {
+          "Add": 63,
+          "Clamp": 35,
+          "Const": 108,
+          "Convolution": 35,
+          "GroupConvolution": 17,
+          "MatMul": 1,
+          "Parameter": 1,
+          "ReduceMean": 1,
+          "Reshape": 1,
+          "Result": 1
+        },
+        "runtime_version": "2026.4.1-22982-e213a147257-releases/2026/4",
+        "export_packages": {}
+      }
+    },
+    "tinyllama": {
+      "origin": "https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+      "revision": "fe8a4ea1ffedaf415f4da2f062534de366a451e6",
+      "license": "Apache-2.0 (pinned Hugging Face model card)",
+      "license_source": "https://huggingface.co/TinyLlama/TinyLlama-1.1B-Chat-v1.0/blob/fe8a4ea1ffedaf415f4da2f062534de366a451e6/README.md",
+      "export": "optimum-cli export openvino --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 --weight-format fp16 models/tinyllama-fp16",
+      "provenance_note": "Existing export. Original command recovered from local PowerShell history; source revision from the single cached Hugging Face snapshot and refs/main. The original command used a moving model ID. The pinned script is the reproduction route, not a claim that export bytes were reproduced.",
+      "prepare_command": "python scripts/prepare_models.py tinyllama",
+      "files": [
+        {
+          "path": "models/tinyllama-fp16/openvino_model.xml",
+          "bytes": 1650970,
+          "sha256": "9a890dccd5bcfec5ad0e28ebb5b78c2d12780a27154942c8d0e800ba3bddd676"
+        },
+        {
+          "path": "models/tinyllama-fp16/openvino_model.bin",
+          "bytes": 2200097103,
+          "sha256": "578dd75c3f4a82163f802cc749551402836bee3c3edc148ad66e5890cde84023"
+        }
+      ],
+      "xml_graph": {
+        "nodes": 3168,
+        "edges": 3741,
+        "operation_types": {
+          "Add": 137,
+          "Assign": 44,
+          "BitwiseAnd": 2,
+          "Broadcast": 89,
+          "Concat": 136,
+          "Const": 1257,
+          "Convert": 388,
+          "Cos": 1,
+          "Divide": 45,
+          "Gather": 52,
+          "LessEqual": 1,
+          "MatMul": 156,
+          "Multiply": 245,
+          "Parameter": 4,
+          "Power": 45,
+          "Range": 4,
+          "ReadValue": 44,
+          "ReduceMean": 45,
+          "ReduceProd": 1,
+          "Reshape": 138,
+          "Result": 1,
+          "ScaledDotProductAttention": 22,
+          "Select": 1,
+          "ShapeOf": 6,
+          "Sin": 1,
+          "Slice": 88,
+          "Split": 1,
+          "Sqrt": 45,
+          "Squeeze": 1,
+          "Swish": 22,
+          "Transpose": 89,
+          "Unsqueeze": 57
+        },
+        "runtime_version": "2026.4.1-22982-e213a147257-releases/2026/4",
+        "export_packages": {
+          "optimum_intel_version": "2.2.0",
+          "optimum_version": "2.3.0",
+          "pytorch_version": "2.14.1",
+          "transformers_version": "5.5.4"
+        }
+      }
+    }
+  },
+  "recording_environment": {
+    "python": "3.12.2",
+    "packages": {
+      "openvino": "2026.4.1",
+      "graphviz": "0.21",
+      "pytest": "9.1.1",
+      "netron": "9.3.2"
+    }
+  }
+}
