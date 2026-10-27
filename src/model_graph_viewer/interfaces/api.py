@@ -25,8 +25,9 @@ def visualize(
 
     A different format needs only an object with ``load(path) -> Graph``.
     Without an output path, write a model-named SVG in the current directory.
-    Set show_dtypes to display output dtypes on nodes. Graphviz layout limits
-    and ordering are per-call overrides; see ``to_dot``.
+    Constants always display dtype and shape. Set show_dtypes to display other
+    output dtypes too. Graphviz layout limits and ordering are per-call
+    overrides; see ``to_dot``.
     """
     if output_path is None:
         source = Path(model_path)

@@ -16,7 +16,7 @@ def to_dot(
     mclimit: float | None = None, nslimit: float | None = None,
     nslimit1: float | None = None, ordering: Literal["in", "out"] | None = None,
 ) -> graphviz.Digraph:
-    """Build DOT, optionally showing output dtypes beside the output ports.
+    """Build DOT with Constant dtype/shape and optional dtypes on other outputs.
 
     Layout overrides default to None, keeping the size-based defaults.
     mclimit scales crossing minimization; nslimit and nslimit1 bound coordinate

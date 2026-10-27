@@ -62,6 +62,26 @@ def test_end_to_end_api_and_cli(small_model, tmp_path, capsys, monkeypatch):
     assert capsys.readouterr().err.strip() == str(output)
 
 
+def test_cli_displays_constant_metadata_and_operation_attributes_by_default(small_model, tmp_path):
+    _, model_path = small_model
+    output = tmp_path / "constants.svg"
+    assert main(["--model", str(model_path), "--output", str(output)]) == 0
+    root = ET.parse(output).getroot()
+    constant_labels = [
+        [item.text for item in node.iter() if item.tag.endswith("}text")]
+        for node in root.iter() if node.get("class") == "node"
+        and any((item.text or "").startswith("Constant #") for item in node.iter())
+    ]
+    assert sorted(label[1:] for label in constant_labels) == [["fp32[2, 2]"], ["i64[]"]]
+    matmul_labels = [
+        [item.text for item in node.iter() if item.tag.endswith("}text")]
+        for node in root.iter() if node.get("class") == "node"
+        and any((item.text or "").startswith("MatMul #") for item in node.iter())
+    ]
+    assert len(matmul_labels) == 2
+    assert all("transpose_a: False" in label and "transpose_b: False" in label for label in matmul_labels)
+
+
 @pytest.mark.parametrize("flags, expected_references", [
     ([], 0),
     (["--transformations", "shared-tensor-references"], 0),

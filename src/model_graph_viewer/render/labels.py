@@ -53,13 +53,18 @@ def _port_row(cells: list[str]) -> str:
 
 
 def _outputs(node: Node, show_dtypes: bool) -> str:
-    if len(node.outputs) == 1 and not show_dtypes:
+    if len(node.outputs) == 1 and not show_dtypes and node.op_type != "Constant":
         return _port_row([_cell("", PORT="o0")])
     cells = []
     for port, tensor in enumerate(node.outputs):
         output = port_label("out", port, len(node.outputs))
         label = output
-        if show_dtypes:
+        if node.op_type == "Constant":
+            label = textwrap.fill(
+                (f"{output}: " if output else "") + tensor_text(tensor),
+                width=settings.TEXT_LIMIT,
+            )
+        elif show_dtypes:
             dtype = tensor.dtype if tensor.dtype is not None else "unknown"
             label = f"{output}: {dtype}" if output else dtype
         tooltip = (f"{output}: " if output else "") + tensor_text(tensor)
@@ -99,6 +104,9 @@ def node_label(node: Node, graph: Graph, prefix: str, *, show_dtypes: bool = Fal
         details.append(tensor_text(node.outputs[0]))
     tooltip = "\n".join([title, node.name, *details])
     rows = [_port_row(inputs), f"<TR>{_cell(title, TITLE=tooltip)}</TR>"]
+    for name, value in node.attributes.items():
+        text = textwrap.fill(f"{name}: {value}", width=settings.TEXT_LIMIT)
+        rows.append(f'<TR>{_cell(text, ALIGN="LEFT")}</TR>')
     if node.viz.collapsed_subgraphs:
         rows.append(f'<TR>{_cell("collapsed bodies: " + ", ".join(node.viz.collapsed_subgraphs))}</TR>')
     if not node.subgraphs:

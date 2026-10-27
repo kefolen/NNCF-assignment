@@ -98,7 +98,7 @@ def test_ports_metadata_escaping_and_styles_in_real_svg(tmp_path):
     assert any("i64[]" in tooltip for tooltip in tooltips)
     assert any("fp32[?, 2..8]" in tooltip for tooltip in tooltips)
     assert any("unknown shape unknown" in tooltip for tooltip in tooltips)
-    assert "fp32" not in text and "quoted <key>" not in text
+    assert "fp32" not in text
     assert all(any(element.tag.endswith("}path") for element in node.iter()) for node in nodes)
     full_attribute = "quoted <key>: " + str(graph.nodes[1].attributes["quoted <key>"])
     assert any(full_attribute in tooltip for tooltip in tooltips)
@@ -107,7 +107,10 @@ def test_ports_metadata_escaping_and_styles_in_real_svg(tmp_path):
         for node in nodes
     }
     assert labels["n0"] == ["Unfamiliar #0", "out1", "out2"]
-    assert labels["n1"] == ["in1", "in2", "in3", "Consumer #1"]
+    assert labels["n1"][:4] == ["in1", "in2", "in3", "Consumer #1"]
+    attribute_lines = labels["n1"][4:]
+    assert " ".join(attribute_lines).split() == full_attribute.split()
+    assert all(len(line) <= settings.TEXT_LIMIT for line in attribute_lines)
     edge_tooltips = {
         element.get("{http://www.w3.org/1999/xlink}title")
         for edge in root.iter() if edge.get("class") == "edge"
@@ -146,8 +149,9 @@ def test_visible_output_dtypes_preserve_ports_metadata_and_graph(tmp_path):
         for node in root.iter() if node.get("class") == "node"
     }
     assert labels["n0"] == ["Unfamiliar #0", "out1: fp32", "out2: i64"]
-    assert labels["n1"] == ["in1", "in2", "in3", "Consumer #1", "unknown"]
-    assert labels["n2"] == ["Constant #2", "fp16"]
+    assert labels["n1"][:4] == ["in1", "in2", "in3", "Consumer #1"]
+    assert labels["n1"][-1] == "unknown"
+    assert labels["n2"] == ["Constant #2", "fp16[]"]
     assert labels["n3"] == ["Sink #3"]
     assert any(
         element.get("{http://www.w3.org/1999/xlink}title") == "Constant #2 -> Sink #3 (dtype: unknown)"
@@ -159,6 +163,32 @@ def test_visible_output_dtypes_preserve_ports_metadata_and_graph(tmp_path):
     )
     assert graph == before
     assert to_dot(graph).source == default
+
+
+@pytest.mark.parametrize("show_dtypes", [False, True])
+def test_constant_dtype_and_shape_are_visible_without_truncation(tmp_path, show_dtypes):
+    long_shape = "[" + ", ".join(["1"] * 30) + "]"
+    tensors = [
+        TensorMetadata("fp16", "[64, 3, 7, 7]"),
+        TensorMetadata("i64", "[]"),
+        TensorMetadata("i64", long_shape),
+        TensorMetadata(),
+    ]
+    graph = Graph({
+        index: Node(index, "constant", "Constant", outputs=[tensor])
+        for index, tensor in enumerate(tensors)
+    })
+    root = ET.parse(render_svg(graph, tmp_path / "constants.svg", show_dtypes=show_dtypes)).getroot()
+    labels = {
+        node.get("id"): [item.text for item in node.iter() if item.tag.endswith("}text")]
+        for node in root.iter() if node.get("class") == "node"
+    }
+    expected = ["fp16[64, 3, 7, 7]", "i64[]", f"i64{long_shape}", "unknown shape unknown"]
+    for index, metadata in enumerate(expected):
+        assert labels[f"n{index}"][0] == f"Constant #{index}"
+        lines = labels[f"n{index}"][1:]
+        assert " ".join(lines) == metadata
+        assert all(len(line) <= settings.TEXT_LIMIT for line in lines)
 
 
 def test_hidden_inputs_and_reference_links_have_no_input_tooltips(tmp_path):

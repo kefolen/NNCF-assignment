@@ -45,7 +45,10 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--subgraph-depth", type=int, metavar="X", help="Body levels to keep expanded with collapse-subgraphs (default: 0)")
     parser.add_argument("--render-timeout", type=float, metavar="SECONDS", help="Optional positive native dot time limit")
-    parser.add_argument("--show-dtypes", action="store_true", help="Display each node's output dtype at its output port")
+    parser.add_argument(
+        "--show-dtypes", action="store_true",
+        help="Display all output dtypes (Constant dtype and shape are always shown)",
+    )
     parser.add_argument("--mclimit", type=float, metavar="SCALE", help="Crossing minimization effort scale (Graphviz mclimit)")
     parser.add_argument("--nslimit", type=float, metavar="N", help="Coordinate optimization iterations per node (Graphviz nslimit)")
     parser.add_argument("--nslimit1", type=float, metavar="N", help="Rank optimization iterations per node (Graphviz nslimit1)")

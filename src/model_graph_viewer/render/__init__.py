@@ -23,8 +23,8 @@ def render_svg(
 ) -> Path:
     """Render once, then replace the destination. Timeout limits native layout only.
 
-    show_dtypes adds visible output dtypes. Layout options are per-call Graphviz
-    overrides, as described in to_dot.
+    Constants always display dtype and shape; show_dtypes adds other output
+    dtypes. Layout options are per-call Graphviz overrides, as described in to_dot.
     """
     if timeout is not None and (not math.isfinite(timeout) or timeout <= 0):
         raise ValueError("Graphviz timeout must be finite and greater than zero")

@@ -61,13 +61,25 @@ empty transformation list preserves the full view. The installed command
 | `--model PATH` | Required OpenVINO IR `.xml` input file. |
 | `--output PATH` | Output SVG path; parent directories are created. Defaults to a model-named file in the current directory. |
 | `--transformations LIST` | Comma-separated transformation names, applied in the listed order. Defaults to no transformations. |
-| `--show-dtypes` | Show output data types beside the output ports. Hidden by default. |
+| `--show-dtypes` | Show output data types beside all output ports. Constant dtype and shape are always visible; other output dtypes are hidden by default. |
 | `--render-timeout SECONDS` | Positive time limit for the native Graphviz call. Higher values allow longer layouts; the default is no time limit. |
 | `--mclimit SCALE` | Scale the effort spent reducing edge crossings. Higher values allow more searching for fewer crossings, potentially taking longer. |
 | `--nslimit N` | Set the coordinate optimization iteration limit per node. Higher values allow more refinement of horizontal node positions, potentially taking longer. |
 | `--nslimit1 N` | Set the rank optimization iteration limit per node. Ranks are the diagram's vertical layers; higher values allow more work on assigning nodes to layers, potentially taking longer. |
 | `--ordering {in,out}` | Preserve the emitted order of incoming (`in`) or outgoing (`out`) edges at each node. If omitted, Graphviz chooses their order. |
 | `--help` | Show the available CLI options and exit. |
+
+Constant nodes display their dtype and shape by default, for example
+`fp16[64, 3, 7, 7]` or `i64[]` for a scalar. When Constants are hidden, this
+metadata appears at their consumer inputs instead. Tensor values are never
+displayed.
+
+Operation attributes, such as Convolution strides and padding, are shown below
+the operation heading. Long attribute text wraps onto multiple lines.
+
+Port labels use one-based numbering: `in1` and `out1` correspond to model port
+index `0`. Labels are omitted when an operation has only one input or output.
+The graph records retain the original zero-based port indices.
 
 The three layout effort options (`--mclimit`, `--nslimit`, `--nslimit1`) accept
 finite nonnegative numbers, including fractions. Higher values can improve a
